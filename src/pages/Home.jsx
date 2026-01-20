@@ -17,7 +17,7 @@ export const Home = () => {
 
   useEffect(() => {
     filterAndSort();
-  }, [sortBy, cryptoList]);
+  }, [sortBy, cryptoList, searchQuery]);
 
   const fetchCryptoData = async () => {
     try {
@@ -31,7 +31,10 @@ export const Home = () => {
   };
 
   const filterAndSort = () => {
-    let filtered = [...cryptoList];
+    let filtered = cryptoList.filter((crypto) =>
+      crypto.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "name":
@@ -61,12 +64,12 @@ export const Home = () => {
             <p>Real-time cryptocurrency prices and market data</p>
           </div>
           <div className="search-section">
-            <input 
-            type="text" 
-            placeholder="search cryptos..." 
-            className="search-inputs"
-            onChange={(e) => setSearchQuery(e.target.value)}
-            value={searchQuery}/> 
+            <input
+              type="text"
+              placeholder="search cryptos..."
+              className="search-input"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchQuery} />
           </div>
         </div>
       </header>
