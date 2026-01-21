@@ -1,15 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { Routes, Route } from "react-router";
 import { Home } from "./pages/Home";
 import { CoinDetail } from "./pages/CoinDetail";
 
 function App() {
   return (
-    <BrowserRouter basename="/Crypo-Project/">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/coin/:id" element={<CoinDetail />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/coin/:id" element={<CoinDetail />} />
+    </Routes>
   );
 }
 
