@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { fetchCryptos } from "../api/coinGecko"
+import { fetchCryptos } from "../api/coinGecko";
 import { CryptoCard } from "../components/CryptoCard";
-
 export const Home = () => {
   const [cryptoList, setCryptoList] = useState([]);
   const [filteredList, setFilteredList] = useState([]);
@@ -10,9 +9,10 @@ export const Home = () => {
   const [sortBy, setSortBy] = useState("market_cap_rank");
   const [searchQuery, setSearchQuery] = useState("");
 
-
   useEffect(() => {
-    fetchCryptoData();
+    const interval = setInterval(fetchCryptoData, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const Home = () => {
   const fetchCryptoData = async () => {
     try {
       const data = await fetchCryptos();
-      setCryptoList(data)
+      setCryptoList(data);
     } catch (err) {
       console.error("Error fetching crypto: ", err);
     } finally {
@@ -31,9 +31,10 @@ export const Home = () => {
   };
 
   const filterAndSort = () => {
-    let filtered = cryptoList.filter((crypto) =>
-      crypto.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      crypto.symbol.toLowerCase().includes(searchQuery.toLowerCase()) 
+    let filtered = cryptoList.filter(
+      (crypto) =>
+        crypto.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        crypto.symbol.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     filtered.sort((a, b) => {
@@ -42,16 +43,16 @@ export const Home = () => {
           return a.name.localeCompare(b.name);
         case "price":
           return a.current_price - b.current_price;
-        case "price-desc":
+        case "price_desc":
           return b.current_price - a.current_price;
         case "change":
-          return b.price_change_percentage_24h - a.price_change_percentage_24h;
+          return a.price_change_percentage_24h - b.price_change_percentage_24h;
         case "market_cap":
           return a.market_cap - b.market_cap;
         default:
-          return a.market_cap_rank - b.market_cap_rank
+          return a.market_cap_rank - b.market_cap_rank;
       }
-    })
+    });
 
     setFilteredList(filtered);
   };
@@ -67,10 +68,11 @@ export const Home = () => {
           <div className="search-section">
             <input
               type="text"
-              placeholder="search cryptos..."
+              placeholder="Search cryptos..."
               className="search-input"
               onChange={(e) => setSearchQuery(e.target.value)}
-              value={searchQuery} />
+              value={searchQuery}
+            />
           </div>
         </div>
       </header>
@@ -87,17 +89,25 @@ export const Home = () => {
           </select>
         </div>
         <div className="view-toggle">
-          <button className={viewMode === "grid" ? "active" : ""}
-            onClick={() => setViewMode("grid")}>Grid</button>
-          <button className={viewMode === "list" ? "active" : ""}
-            onClick={() => setViewMode("list")}>List</button>
+          <button
+            className={viewMode === "grid" ? "active" : ""}
+            onClick={() => setViewMode("grid")}
+          >
+            Grid
+          </button>
+          <button
+            className={viewMode === "list" ? "active" : ""}
+            onClick={() => setViewMode("list")}
+          >
+            List
+          </button>
         </div>
       </div>
 
       {isLoading ? (
         <div className="loading">
           <div className="spinner" />
-          <p>Loading crypto data</p>
+          <p>Loading crypto data...</p>
         </div>
       ) : (
         <div className={`crypto-container ${viewMode}`}>
@@ -106,6 +116,10 @@ export const Home = () => {
           ))}
         </div>
       )}
+
+      <footer className="footer">
+        <p>Data provided by CoinGecko API • Updated every 30 seconds</p>
+      </footer>
     </div>
   );
-}
+};

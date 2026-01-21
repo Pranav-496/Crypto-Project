@@ -1,19 +1,17 @@
 import { Link } from "react-router";
-import { formatMarketCap, formatPrice } from "../utils/formatter";
+import { formatPrice, formatMarketCap } from "../utils/formatter";
 
 export const CryptoCard = ({ crypto }) => {
   return (
-    <Link to={`/coin/${crypto.id}`} style={{textDecoration : "none"}}>
+    <Link to={`/coin/${crypto.id}`} style={{ textDecoration: "none" }}>
       <div className="crypto-card">
         <div className="crypto-header">
           <div className="crypto-info">
             <img src={crypto.image} alt={crypto.name} />
             <div>
               <h3>{crypto.name}</h3>
-              <p className="symbol">
-                {crypto.symbol.toUpperCase()}
-                <span className="rank">#{crypto.market_cap_rank}</span>
-              </p>
+              <p className="symbol">{crypto.symbol.toUpperCase()}</p>
+              <span className="rank">#{crypto.market_cap_rank}</span>
             </div>
           </div>
         </div>
@@ -21,9 +19,10 @@ export const CryptoCard = ({ crypto }) => {
         <div className="crypto-price">
           <p className="price">{formatPrice(crypto.current_price)}</p>
           <p
-            className={`change ${crypto.price_change_percentage_24h >= 0 ? "positive" : "negative"
-              }`}>
-
+            className={`change ${
+              crypto.price_change_percentage_24h >= 0 ? "positive" : "negative"
+            }`}
+          >
             {crypto.price_change_percentage_24h >= 0 ? "↑" : "↓"}{" "}
             {Math.abs(crypto.price_change_percentage_24h).toFixed(2)}%
           </p>
